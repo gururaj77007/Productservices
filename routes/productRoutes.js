@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const responseTime = require("response-time"); // Import the response-time middleware
+// Import the response-time middleware
 const Product = require("../mongodb/Products-schema");
 
 // Use the response-time middleware to measure response time
