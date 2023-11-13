@@ -4,7 +4,6 @@ const responseTime = require("response-time"); // Import the response-time middl
 const Product = require("../mongodb/Products-schema");
 
 // Use the response-time middleware to measure response time
-router.use(responseTime());
 
 router.get("/:productId", async (req, res) => {
   try {
@@ -19,9 +18,6 @@ router.get("/:productId", async (req, res) => {
     }
 
     // Log the response time to the console
-    console.log(
-      `Response time for GET /:productId: ${res.get("X-Response-Time")}`
-    );
 
     res.json(product);
   } catch (error) {
@@ -84,7 +80,6 @@ router.post("/", async (req, res) => {
     console.log(products);
 
     // Log the response time to the console
-    console.log(`Response time for POST /: ${res.get("X-Response-Time")}`);
 
     res.json(products);
   } catch (error) {
