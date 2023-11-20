@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 const mongoosePaginate = require("mongoose-paginate-v2");
 
+// Create a separate connection
+var conn = mongoose.createConnection(
+  "mongodb+srv://vvce21cseaiml0004:Ramguru123@gb.dq3vt5r.mongodb.net/Product?retryWrites=true&w=majority"
+);
+
 const reviewSchema = new mongoose.Schema({
   rating: {
     type: Number,
@@ -14,7 +19,6 @@ const reviewSchema = new mongoose.Schema({
   },
   userId: {
     type: String,
-    // Reference to the User model if you have one
     required: true,
   },
   createdAt: {
@@ -22,6 +26,7 @@ const reviewSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+
 const variantSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -51,7 +56,7 @@ const productSchema = new mongoose.Schema({
   },
   discount: {
     type: Number,
-    default: 0, // Default discount value is 0
+    default: 0,
   },
   houseId: {
     type: String,
@@ -67,7 +72,7 @@ const productSchema = new mongoose.Schema({
     default: "Active",
   },
   imageUrl: {
-    type: [String], // Make imageUrl an array of strings
+    type: [String],
   },
   discountPercentage: {
     type: Number,
@@ -86,11 +91,10 @@ const productSchema = new mongoose.Schema({
   },
 });
 
-// Virtual field for calculating discounted price
-
 // Apply the pagination plugin to your schema
 productSchema.plugin(mongoosePaginate);
 
-const Product = mongoose.model("Product", productSchema);
+// Create a model for the "Product" schema using the connection
+const Product = conn.model("Product", productSchema);
 
 module.exports = Product;
