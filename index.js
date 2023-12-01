@@ -4,6 +4,7 @@ const productRoutes = require("./routes/productRoutes");
 const cors = require("cors");
 const service = require("./routes/services");
 //const { mongoose_connect } = require("./mongodb/connect");
+const agentroutes = require("./routes/Agentproduct");
 
 const app = express();
 //mongoose_connect();
@@ -19,6 +20,7 @@ app.get("/health", (req, res) => {
 // Product routes
 app.use("/product", productRoutes);
 app.use("/services", service);
+app.use("/agent", agentroutes);
 
 // Mount the product routes under '/api'
 

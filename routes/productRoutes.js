@@ -10,7 +10,9 @@ router.get("/:productId", async (req, res) => {
     const productId = req.params.productId;
 
     // Find the product by its ID
-    const product = await Product.findById(productId);
+    const product = await Product.findById(productId).select(
+      "-description_embedding -name_embedding"
+    );
     console.log(product);
 
     if (!product) {
@@ -70,6 +72,7 @@ router.post("/", async (req, res) => {
     // Define pagination options using page and pageSize
     const options = {
       skip: (page - 1) * pageSize || 10,
+      select: { description_embedding: 0, name_embedding: 0 },
 
       page: parseInt(page) || 1,
       limit: parseInt(pageSize) || 10,
@@ -77,6 +80,7 @@ router.post("/", async (req, res) => {
 
     // Find products matching the query with pagination
     const products = await Product.paginate(query, options);
+
     console.log(products);
 
     // Log the response time to the console
@@ -103,7 +107,7 @@ router.post("/:productId/reviews", async (req, res) => {
     const product = await Product.findOne({
       _id: productId,
       "reviews.userId": userId,
-    });
+    }).select("-description_embedding -name_embedding");
 
     if (product) {
       return res
@@ -119,7 +123,7 @@ router.post("/:productId/reviews", async (req, res) => {
       productId,
       { $push: { reviews: review } },
       { new: true }
-    );
+    ).select("-description_embedding -name_embedding");
 
     if (!updatedProduct) {
       return res.status(404).json({ message: "Product not found" });
@@ -138,7 +142,9 @@ router.get("/:productId/reviews", async (req, res) => {
     const productId = req.params.productId;
 
     // Find the product by its ID and return the reviews
-    const product = await Product.findById(productId);
+    const product = await Product.findById(productId).select(
+      "-description_embedding -name_embedding"
+    );
 
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
