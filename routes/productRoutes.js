@@ -2,8 +2,23 @@ const express = require("express");
 const router = express.Router();
 // Import the response-time middleware
 const Product = require("../mongodb/Products-schema");
+const client = require("../redis /redisconnection");
+
+// client.connect();
 
 // Use the response-time middleware to measure response time
+
+const ProductlistCache = async (req, res, next) => {
+  const { category, page } = req.body;
+  console.log(`${category}${page}`);
+
+  const value = await client.get(`${category}${page}`);
+  if (value) {
+    res.json(JSON.parse(value));
+  } else {
+    next();
+  }
+};
 
 router.get("/:productId", async (req, res) => {
   try {
@@ -28,7 +43,7 @@ router.get("/:productId", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", ProductlistCache, async (req, res) => {
   console.log(req.body);
   console.log("here");
   try {
@@ -83,7 +98,12 @@ router.post("/", async (req, res) => {
 
     console.log(products);
 
+    const key = `${category}${page}`;
+    console.log(typeof key);
+    const serializedProducts = JSON.stringify(products);
+
     // Log the response time to the console
+    client.setEx(key, 3600, serializedProducts);
 
     res.json(products);
   } catch (error) {
