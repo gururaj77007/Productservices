@@ -89,6 +89,10 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  agentid: {
+    type: String,
+    //required: true,
+  },
 });
 
 // Apply the pagination plugin to your schema
